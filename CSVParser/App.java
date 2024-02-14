@@ -1,8 +1,8 @@
-package edu.brown.cs.student.main.CSVParser;
+package CSVParser;
 
 import static java.lang.Integer.parseInt;
 
-import edu.brown.cs.student.main.CSVParser.Creators.CreateListFromRow;
+import CSVParser.Creators.CreateListFromRow;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;

@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.CSVParser.Creators;
+package CSVParser.Creators;
 
 import java.util.List;
 

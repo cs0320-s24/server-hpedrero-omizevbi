@@ -1,8 +1,8 @@
-package edu.brown.cs.student.main.CSVParser;
+package CSVParser;
 
-import edu.brown.cs.student.main.CSVParser.Creators.CreatorFromRow;
-import edu.brown.cs.student.main.Exceptions.CSVParserException;
-import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
+import CSVParser.Creators.CreatorFromRow;
+import Exceptions.CSVParserException;
+import Exceptions.FactoryFailureException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;

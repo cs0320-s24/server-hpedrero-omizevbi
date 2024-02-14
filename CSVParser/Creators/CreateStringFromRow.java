@@ -1,6 +1,6 @@
-package edu.brown.cs.student.main.CSVParser.Creators;
+package CSVParser.Creators;
 
-import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
+import Exceptions.FactoryFailureException;
 import java.util.List;
 
 public class CreateStringFromRow implements CreatorFromRow<String> {

@@ -1,6 +1,4 @@
-package edu.brown.cs.student.main;
-
-import edu.brown.cs.student.main.CSVParser.App;
+import CSVParser.App;
 
 /** The Main class of our project. This is where execution begins. */
 public final class Main {

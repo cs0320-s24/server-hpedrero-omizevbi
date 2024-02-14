@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.CSVParser;
+package CSVParser;
 
 import java.util.ArrayList;
 import java.util.List;
