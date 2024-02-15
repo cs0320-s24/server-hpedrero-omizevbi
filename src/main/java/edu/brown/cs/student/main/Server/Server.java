@@ -19,8 +19,12 @@ public class Server {
      * http://localhost:6969/csv?action=viewcsv
      * http://localhost:6969/csv?action=searchcsv&query=Bena
      * http://localhost:6969/csv?action=searchcsv&query=1604
+     *
+     * http://localhost:6969/census?state=Rhode%20Island&county=Bristol%20County
      */
     Spark.get("/csv", new CSVHandler());
+    Spark.get("/census", new CensusHandler());
+
     Spark.init();
     Spark.awaitInitialization();
 

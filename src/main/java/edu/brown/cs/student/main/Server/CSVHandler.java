@@ -12,9 +12,6 @@ public class CSVHandler implements Route {
 
   private CSVParser parser;
   private Search search;
-
-  public CSVHandler() {}
-
   public Object handle(Request request, Response response) throws Exception {
     String action = request.queryParams("action");
     switch(action) {
