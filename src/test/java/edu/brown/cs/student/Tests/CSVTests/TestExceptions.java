@@ -1,4 +1,4 @@
-package edu.brown.cs.student.Tests;
+package edu.brown.cs.student.Tests.CSVTests;
 
 import static org.junit.Assert.assertThrows;
 

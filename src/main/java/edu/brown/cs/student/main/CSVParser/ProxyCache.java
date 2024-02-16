@@ -15,7 +15,6 @@ public class ProxyCache<T> {
      * @param maxSize         The maximum size of the cache.
      * @param expireAfterWrite The duration after which entries in the cache expire after being written.
      * @param timeUnit        The TimeUnit for specifying the time duration.
-     * @throws Exception If an error occurs during the construction of the CSV parser or cache.
      */
     public ProxyCache(int maxSize, long expireAfterWrite, TimeUnit timeUnit) {
         this.cache = CacheBuilder.newBuilder()
