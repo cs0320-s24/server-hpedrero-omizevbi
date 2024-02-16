@@ -14,7 +14,7 @@ public class CSVHandler implements Route {
   private Search search;
   public Object handle(Request request, Response response) throws Exception {
     String action = request.queryParams("action");
-    switch(action) {
+    switch (action) {
       case "loadcsv":
         return this.loadcsv(request, response);
       case "viewcsv":
