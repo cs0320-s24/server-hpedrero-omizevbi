@@ -20,7 +20,7 @@ public class ProxyCache<T> {
         this.cache = CacheBuilder.newBuilder()
                 .maximumSize(maxSize)
                 .expireAfterWrite(expireAfterWrite, timeUnit)
-                .build(new CacheLoader<String, List<T>>() {
+                .build(new CacheLoader<>() {
             @Override
             public List<T> load(String key) throws Exception {
                 return parser.getParsed();
