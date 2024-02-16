@@ -2,6 +2,8 @@ package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
+import edu.brown.cs.student.main.CSVParser.ProxyCache;
+import java.util.concurrent.TimeUnit;
 import spark.Spark;
 
 public class Server {
@@ -22,8 +24,9 @@ public class Server {
      *
      * http://localhost:6969/census?state=Rhode%20Island&county=Bristol%20County
      */
+    ProxyCache cache = new ProxyCache(100, 30, TimeUnit.MINUTES);
     Spark.get("/csv", new CSVHandler());
-    Spark.get("/census", new CensusHandler());
+    Spark.get("/census", new CensusHandler(cache));
 
     Spark.init();
     Spark.awaitInitialization();

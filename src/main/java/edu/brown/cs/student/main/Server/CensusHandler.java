@@ -1,6 +1,7 @@
 package edu.brown.cs.student.main.Server;
 
 import com.squareup.moshi.Types;
+import edu.brown.cs.student.main.CSVParser.ProxyCache;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -18,6 +19,11 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 public class CensusHandler implements Route {
+  private ProxyCache cache;
+
+  public CensusHandler(ProxyCache cache) {
+    this.cache = cache;
+  }
 
   @Override
   public Object handle(Request request, Response response) {
@@ -28,13 +34,19 @@ public class CensusHandler implements Route {
 
     try {
       String stateCode = getStateCode(state);
+      String countyCode = county != null && !county.isEmpty() ? getCountyCode(stateCode, county) : "*";
+      String cacheKey = "state:" + stateCode + "|county:" + countyCode;
+
       String data;
-      if (county != null && !county.isEmpty()) {
-        String countyCode = getCountyCode(stateCode, county);
-        data = getCensusData(stateCode, countyCode, false);
+      if (cache != null && cache.getCachedData(cacheKey) != null) {
+        data = cache.getCachedData(cacheKey);
       } else {
-        data = getCensusData(stateCode, "*", true);
+        data = getCensusData(stateCode, countyCode.equals("*") ? "*" : countyCode, countyCode.equals("*"));
+        if (cache != null) {
+          cache.putData(cacheKey, data);
+        }
       }
+
       responseMap.put("timestamp", System.currentTimeMillis());
       responseMap.put("state", state);
       if (county != null && !county.isEmpty()) {
