@@ -22,17 +22,24 @@ public class CensusHandler implements Route {
   @Override
   public Object handle(Request request, Response response) {
     String state = request.queryParams("state");
-    String county = request.queryParams("county");
+    String county = request.queryParams("county"); // null for query of entire state
 
     Map<String, Object> responseMap = new HashMap<>();
 
     try {
       String stateCode = getStateCode(state);
-      String countyCode = getCountyCode(stateCode, county);
-      String data = getCensusData(stateCode, countyCode);
+      String data;
+      if (county != null && !county.isEmpty()) {
+        String countyCode = getCountyCode(stateCode, county);
+        data = getCensusData(stateCode, countyCode, false);
+      } else {
+        data = getCensusData(stateCode, "*", true);
+      }
       responseMap.put("timestamp", System.currentTimeMillis());
       responseMap.put("state", state);
-      responseMap.put("county", county);
+      if (county != null && !county.isEmpty()) {
+        responseMap.put("county", county);
+      }
       responseMap.put("censusData", data);
       responseMap.put("result", "success");
     } catch (Exception e) {
@@ -103,12 +110,14 @@ public class CensusHandler implements Route {
     return countyCode;
   }
 
-  private String getCensusData(String stateCode, String countyCode) throws URISyntaxException, IOException, InterruptedException {
-    HttpRequest request = HttpRequest.newBuilder().uri(new URI("https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:"
-            + countyCode + "&in=state:" + stateCode)).GET().build();
+  private String getCensusData(String stateCode, String countyCode, boolean isStateWide) throws URISyntaxException, IOException, InterruptedException {
+    String endpoint = isStateWide
+        ? "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=state:" + stateCode
+        : "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=county:" + countyCode
+            + "&in=state:" + stateCode;
 
-    HttpResponse<String> response = HttpClient.newBuilder().build()
-            .send(request, HttpResponse.BodyHandlers.ofString());
+    HttpRequest request = HttpRequest.newBuilder().uri(new URI(endpoint)).GET().build();
+    HttpResponse<String> response = HttpClient.newBuilder().build().send(request, HttpResponse.BodyHandlers.ofString());
 
     return response.body();
   }
