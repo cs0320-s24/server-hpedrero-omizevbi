@@ -13,7 +13,7 @@ import edu.brown.cs.student.main.CSVParser.Creators.CreatorFromRow;
 public class ProxyCache<T> {
 
     private final CSVParser<T> parser;
-    private final LoadingCache<String, List<T>> cache;
+    public final LoadingCache<String, List<T>> cache;
 
     public ProxyCache(Reader reader, CreatorFromRow<T> creator, boolean hasHeaders, int maxSize, long expireAfterWrite, TimeUnit timeUnit) throws Exception {
         this.parser = new CSVParser<>(reader, creator, hasHeaders);
