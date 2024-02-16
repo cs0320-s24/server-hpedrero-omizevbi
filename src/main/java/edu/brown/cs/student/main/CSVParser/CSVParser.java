@@ -27,7 +27,17 @@ public class CSVParser<T> {
   static final Pattern regexSplitCSVRow =
       Pattern.compile(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*(?![^\\\"]*\\\"))");
 
-  /** Constructor - initializes instance variables and calls parse */
+  /**
+   * Constructs a new CSVParser object with the specified parameters.
+   *
+   * @param reader  The Reader object for reading data from the CSV file.
+   * @param creator The CreatorFromRow object for creating type T objects from CSV rows.
+   * @param hasHeaders A boolean indicating whether the CSV data has headers.
+   * @throws IllegalArgumentException If the reader or creator is null.
+   * @throws IOException If an I/O error occurs while reading the CSV data.
+   * @throws FactoryFailureException If an error occurs during the creation of type T objects.
+   * @throws CSVParserException If an error occurs while parsing the CSV data.
+   */
   public CSVParser(Reader reader, CreatorFromRow<T> creator, boolean hasHeaders)
       throws IOException, FactoryFailureException, CSVParserException {
 
@@ -48,7 +58,10 @@ public class CSVParser<T> {
   }
 
   /**
-   * parses the csv - creates headers, reads & splits every line, initializes list of typeObjects
+   * Parses the CSV data from the reader, creates objects of type T from each row, and populates the list of typeObjects.
+   *
+   * @throws IOException               If an I/O error occurs while reading the CSV data.
+   * @throws FactoryFailureException   If the CSV data is formatted incorrectly.
    */
   private void parse() throws IOException, FactoryFailureException {
     List<T> typeObjects = new ArrayList<>();
@@ -75,6 +88,11 @@ public class CSVParser<T> {
     this.typeObjects = typeObjects;
   }
 
+  /**
+   * Gets the list of parsed objects of type T.
+   *
+   * @return The list of parsed objects of type T.
+   */
   public List<T> getParsed() {
     return this.typeObjects;
   }
@@ -118,6 +136,11 @@ public class CSVParser<T> {
         .replaceAll("\"\"", "\"");
   }
 
+  /**
+   * Gets the list of headers if the CSV data has headers.
+   *
+   * @return The list of headers, or null if the CSV data does not have headers.
+   */
   public List<String> getHeaders() {
     return headers;
   }

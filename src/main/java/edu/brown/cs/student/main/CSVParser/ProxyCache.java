@@ -1,19 +1,22 @@
 package edu.brown.cs.student.main.CSVParser;
 
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import edu.brown.cs.student.main.CSVParser.Creators.CreatorFromRow;
 
 public class ProxyCache<T> {
 
     public final LoadingCache<String, String> cache;
-
+    /**
+     * Constructs a new ProxyCache object with the specified parameters.
+     *
+     * @param maxSize         The maximum size of the cache.
+     * @param expireAfterWrite The duration after which entries in the cache expire after being written.
+     * @param timeUnit        The TimeUnit for specifying the time duration.
+     * @throws Exception If an error occurs during the construction of the CSV parser or cache.
+     */
     public ProxyCache(int maxSize, long expireAfterWrite, TimeUnit timeUnit) {
         this.cache = CacheBuilder.newBuilder()
             .maximumSize(maxSize)

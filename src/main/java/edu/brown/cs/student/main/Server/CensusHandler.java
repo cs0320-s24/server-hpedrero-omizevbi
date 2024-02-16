@@ -25,6 +25,15 @@ public class CensusHandler implements Route {
     this.cache = cache;
   }
 
+  /**
+   * Handles the incoming request to retrieve census data for a specific state and county.
+   *
+   * @param request  The request object containing the HTTP request parameters.
+   * @param response The response object for sending HTTP responses.
+   * @return A map containing the census data for the specified state and county, along with additional metadata.
+   *         If the operation is successful, the map contains the census data, state, county, timestamp, and a success message.
+   *         If an error occurs during the operation, the map contains an error message and a failure result.
+   */
   @Override
   public Object handle(Request request, Response response) {
     String state = request.queryParams("state");
@@ -62,6 +71,16 @@ public class CensusHandler implements Route {
     return responseMap;
   }
 
+  /**
+   * Retrieves the state code for the given state name by querying the Census API.
+   *
+   * @param stateName The name of the state for which to retrieve the state code.
+   * @return The state code corresponding to the given state name.
+   * @throws URISyntaxException    If the URI syntax is invalid.
+   * @throws IOException           If an I/O error occurs while sending or receiving the HTTP request.
+   * @throws InterruptedException If the thread is interrupted while waiting for the request to complete.
+   * @throws IllegalArgumentException If no state code is found for the given state name.
+   */
   private String getStateCode(String stateName) throws URISyntaxException, IOException, InterruptedException {
     String url = "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*";
     HttpRequest request = HttpRequest.newBuilder().uri(new URI(url)).GET().build();
@@ -92,6 +111,17 @@ public class CensusHandler implements Route {
 
   }
 
+  /**
+   * Retrieves the county code for the given county name and state code by querying the Census API.
+   *
+   * @param stateCode  The state code for which to retrieve the county code.
+   * @param countyName The name of the county for which to retrieve the county code.
+   * @return The county code corresponding to the given county name and state code.
+   * @throws URISyntaxException    If the URI syntax is invalid.
+   * @throws IOException           If an I/O error occurs while sending or receiving the HTTP request.
+   * @throws InterruptedException If the thread is interrupted while waiting for the request to complete.
+   * @throws IllegalArgumentException If no county code is found for the given county name and state code.
+   */
   private String getCountyCode(String stateCode, String countyName) throws URISyntaxException, IOException, InterruptedException {
     String url = "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=county:*&in=state:"
         + stateCode;
@@ -122,6 +152,16 @@ public class CensusHandler implements Route {
     return countyCode;
   }
 
+  /**
+   * Retrieves census data for the given state code and county code by querying the Census API.
+   *
+   * @param stateCode  The state code for which to retrieve census data.
+   * @param countyCode The county code for which to retrieve census data.
+   * @return The census data corresponding to the given state code and county code.
+   * @throws URISyntaxException    If the URI syntax is invalid.
+   * @throws IOException           If an I/O error occurs while sending or receiving the HTTP request.
+   * @throws InterruptedException If the thread is interrupted while waiting for the request to complete.
+   */
   private String getCensusData(String stateCode, String countyCode, boolean isStateWide) throws URISyntaxException, IOException, InterruptedException {
     String endpoint = isStateWide
         ? "https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03_022E&for=state:" + stateCode
