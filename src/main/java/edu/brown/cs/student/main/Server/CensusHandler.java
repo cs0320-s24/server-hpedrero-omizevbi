@@ -20,14 +20,17 @@ import com.squareup.moshi.Moshi;
 
 public class CensusHandler implements Route {
   private ProxyCache cache;
+  private List<List<String>> stateCodes;
 
   /**
    * Constructs a new CensusHandler with the specified ProxyCache for caching census data.
    *
    * @param cache The ProxyCache instance to be used for caching.
    */
-  public CensusHandler(ProxyCache cache) {
+  public CensusHandler(ProxyCache cache)
+      throws URISyntaxException, IOException, InterruptedException {
     this.cache = cache;
+    this.initializeStateCodes();
   }
 
   /**
@@ -75,16 +78,16 @@ public class CensusHandler implements Route {
   }
 
   /**
-   * Retrieves the state code for the given state name by querying the Census API.
+   * Queries the ACS API for the state codes and stores them to
+   * prevent unnecessary successive queries.
    *
-   * @param stateName The name of the state for which to retrieve the state code.
-   * @return The state code corresponding to the given state name.
    * @throws URISyntaxException    If the URI syntax is invalid.
    * @throws IOException           If an I/O error occurs while sending or receiving the HTTP request.
    * @throws InterruptedException If the thread is interrupted while waiting for the request to complete.
    * @throws IllegalArgumentException If no state code is found for the given state name.
    */
-  private String getStateCode(String stateName) throws URISyntaxException, IOException, InterruptedException {
+
+  private void initializeStateCodes() throws URISyntaxException, IOException, InterruptedException {
     String url = "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*";
     HttpRequest request = HttpRequest.newBuilder().uri(new URI(url)).GET().build();
 
@@ -94,11 +97,20 @@ public class CensusHandler implements Route {
     Type listType = Types.newParameterizedType(List.class, List.class, String.class);
     JsonAdapter<List<List<String>>> jsonAdapter = moshi.adapter(listType);
 
-    List<List<String>> censusResponse = jsonAdapter.fromJson(response.body());
+    this.stateCodes = jsonAdapter.fromJson(response.body());
 
+  }
+
+  /**
+   * Retrieves the state code for the given state name from stored list.
+   *
+   * @param stateName The name of the state for which to retrieve the state code.
+   * @return The state code corresponding to the given state name.
+   */
+  private String getStateCode(String stateName) {
     String stateCode = "";
-    if (censusResponse != null) {
-      for (List<String> item : censusResponse) {
+    if (this.stateCodes != null) {
+      for (List<String> item : this.stateCodes) {
         if (item.get(0).equalsIgnoreCase(stateName)) {
           stateCode = item.get(1);
           break;

@@ -23,15 +23,25 @@ public class CSVHandler implements Route {
    */
   public Object handle(Request request, Response response) throws Exception {
     String action = request.queryParams("action");
-    switch (action) {
-      case "loadcsv":
-        return this.loadcsv(request, response);
-      case "viewcsv":
-        return this.parser.getParsed();
-      case "searchcsv":
-        return this.searchcsv(request, response);
-      default:
-        return "Invalid action";
+    try {
+      switch (action) {
+        case "loadcsv":
+          return this.loadcsv(request, response);
+        case "viewcsv":
+          if (this.parser == null) {
+            return "CSV file not loaded.";
+          }
+          return this.parser.getParsed();
+        case "searchcsv":
+          if (this.search == null) {
+            return "CSV file not loaded.";
+          }
+          return this.searchcsv(request, response);
+        default:
+          return "Invalid action";
+      }
+    } catch (Exception e) {
+        return "error occurred - " + e.getMessage();
     }
   }
 
@@ -45,7 +55,7 @@ public class CSVHandler implements Route {
    *         Returns "Failed to load CSV" if an error occurs during loading the CSV file or initializing the parser proxy.
    * @throws Exception If an error occurs during CSV file loading or parser proxy initialization.
    */
-  public Object loadcsv(Request request, Response response) throws Exception {
+  public Object loadcsv(Request request, Response response) {
     String path = request.queryParams("path");
     try {
       this.parser =
@@ -68,7 +78,7 @@ public class CSVHandler implements Route {
    * @return An object representing the result of the search operation.
    * @throws Exception If an error occurs during the search operation.
    */
-  public Object searchcsv(Request request, Response response) throws Exception {
+  public Object searchcsv(Request request, Response response) {
     String query = request.queryParams("query");
     return this.search.searchEveryColumn(query);
   }
