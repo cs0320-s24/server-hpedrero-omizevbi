@@ -21,18 +21,21 @@ import com.squareup.moshi.Moshi;
 public class CensusHandler implements Route {
   private ProxyCache cache;
 
+  /**
+   * Constructs a new CensusHandler with the specified ProxyCache for caching census data.
+   *
+   * @param cache The ProxyCache instance to be used for caching.
+   */
   public CensusHandler(ProxyCache cache) {
     this.cache = cache;
   }
 
   /**
-   * Handles the incoming request to retrieve census data for a specific state and county.
+   * Handles the HTTP request by retrieving census data based on the specified state and county (optional) parameters.
    *
-   * @param request  The request object containing the HTTP request parameters.
-   * @param response The response object for sending HTTP responses.
-   * @return A map containing the census data for the specified state and county, along with additional metadata.
-   *         If the operation is successful, the map contains the census data, state, county, timestamp, and a success message.
-   *         If an error occurs during the operation, the map contains an error message and a failure result.
+   * @param request  The HTTP request object containing query parameters.
+   * @param response The HTTP response object to be populated with the result.
+   * @return A map containing the timestamp, state, county (if specified), census data, and result of the operation.
    */
   @Override
   public Object handle(Request request, Response response) {
@@ -153,14 +156,15 @@ public class CensusHandler implements Route {
   }
 
   /**
-   * Retrieves census data for the given state code and county code by querying the Census API.
+   * Retrieves census data for the specified state and county (optional) from the Census API.
    *
-   * @param stateCode  The state code for which to retrieve census data.
-   * @param countyCode The county code for which to retrieve census data.
-   * @return The census data corresponding to the given state code and county code.
-   * @throws URISyntaxException    If the URI syntax is invalid.
+   * @param stateCode   The code representing the state for which census data is to be retrieved.
+   * @param countyCode  The code representing the county for which census data is to be retrieved, or "*" for statewide data.
+   * @param isStateWide A flag indicating whether the query is for statewide data.
+   * @return The census data retrieved from the Census API.
+   * @throws URISyntaxException    If the URI endpoint is invalid.
    * @throws IOException           If an I/O error occurs while sending or receiving the HTTP request.
-   * @throws InterruptedException If the thread is interrupted while waiting for the request to complete.
+   * @throws InterruptedException If the HTTP request is interrupted while waiting for the response.
    */
   private String getCensusData(String stateCode, String countyCode, boolean isStateWide) throws URISyntaxException, IOException, InterruptedException {
     String endpoint = isStateWide
